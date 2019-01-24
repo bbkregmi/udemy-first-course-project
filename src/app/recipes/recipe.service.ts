@@ -1,8 +1,10 @@
 import { Recipe } from './recipe.model'
 import { Ingredient } from '../shared/ingredient.model';
+import { Subject } from 'rxjs';
 
 export class RecipeService {
 
+    recipesChanged = new Subject<Recipe[]>();
 
     private recipes: Recipe[] = [
         new Recipe('Chicken and Lemon Rice', 'Easy, low-budget, filling, and saisfying!', 
@@ -11,7 +13,7 @@ export class RecipeService {
             new Ingredient('Chicken Thighs', 3),
             new Ingredient('Basmati Rice', 3)
         ]),
-        new Recipe('Big Burger', 'Everythng you would want in a burger', 
+        new Recipe('Big Burger', 'Everythng you would want in a burger',
         'https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1177081/3625/2413/m1/fpnw/wm1/big-burger-vector-icon-converted1-01-.jpg?1460568336&s=4c3fea98d6e9511a8a4f9dadf3d90f4d',
         [
             new Ingredient('Buns', 2),
@@ -25,5 +27,20 @@ export class RecipeService {
 
     getRecipe(id: number) {
         return this.recipes[id];
+    }
+
+    addRecipe(recipe: Recipe) {
+        this.recipes.push(recipe);
+        this.recipesChanged.next(this.recipes.slice());
+    }
+
+    updateRecipe(index: number, recipe: Recipe) {
+        this.recipes[index] = recipe;
+        this.recipesChanged.next(this.recipes.slice());
+    }
+
+    deleteRecipe(index: number) {
+        this.recipes.splice(index, 1);
+        this.recipesChanged.next(this.recipes.slice());
     }
 }
